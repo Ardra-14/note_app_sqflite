@@ -110,7 +110,7 @@ class _NoteDetailsState extends State<NoteDetails> {
     }else{
       await databaseHelper.insertNote(widget.note);
     }
-    Navigator.pop(context);
+    Navigator.pop(context,true);
   }
 
   void _delete() async{
@@ -118,6 +118,6 @@ class _NoteDetailsState extends State<NoteDetails> {
       return;
     }
     await databaseHelper.deleteNote(widget.note.id!);
-    Navigator.pop(context);
+    Navigator.pop(context,true);
   }
 }
