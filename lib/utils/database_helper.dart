@@ -81,14 +81,7 @@ class DatabaseHelper{
     return result;
   }
 
-  //get number of note objects in database
-
-  // Future<int?> getCount() async{
-  //   Database db = await this.database;
-  //   List<Map<String,dynamic>> x = await db.rawQuery('SELECT COUNT (*) FROM $noteTable');
-  //   int? result = Sqflite.firstIntValue(x);
-  //   return result;
-  // }
+ 
 
 
   // get the 'Map List' List<Map> and convert it to 'Note List' List<Note>
