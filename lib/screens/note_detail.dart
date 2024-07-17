@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:my_app/models/note.dart';
+import 'package:my_app/utils/database_helper.dart';
 
 class NoteDetails extends StatefulWidget {
 
 final String appBarTitle;
- NoteDetails({super.key, required this.appBarTitle});
+final Note note;
+
+ 
+ NoteDetails({super.key, required this.appBarTitle, required this.note});
 
   @override
   State<NoteDetails> createState() => _NoteDetailsState();
@@ -11,9 +16,19 @@ final String appBarTitle;
 
 class _NoteDetailsState extends State<NoteDetails> {
 
-
+  DatabaseHelper databaseHelper = DatabaseHelper();
   final _titleController = TextEditingController();
   final _descController = TextEditingController();
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _titleController.text = widget.note.title;
+    _descController.text = widget.note.description;
+  }
+
   @override
 
   Widget build(BuildContext context) {
@@ -33,7 +48,9 @@ class _NoteDetailsState extends State<NoteDetails> {
           children: [
             TextField(
               controller: _titleController ,
-              onChanged: (value){},
+              onChanged: (value){
+                widget.note.title = value;
+              },
               decoration: InputDecoration(
                 hintText: 'Title'
               ),
@@ -41,7 +58,9 @@ class _NoteDetailsState extends State<NoteDetails> {
             SizedBox(height: 20,),
              TextField(
               controller: _descController ,
-              onChanged: (value){},
+              onChanged: (value){
+                widget.note.description = value;
+              },
               decoration: InputDecoration(
                 hintText: 'Description'
               ),
@@ -51,13 +70,12 @@ class _NoteDetailsState extends State<NoteDetails> {
               child: Row(
                 children: [
                   Expanded(
-              
                     child: ElevatedButton(
                       style: ButtonStyle(
-                        backgroundColor: WidgetStatePropertyAll(Colors.pink[100]),
+                        backgroundColor: WidgetStateProperty.all(Colors.pink[100]),
                       ),
                       onPressed: (){
-                            
+                            _save();
                       },
                       child: Text('Save'),
                       ),
@@ -69,7 +87,7 @@ class _NoteDetailsState extends State<NoteDetails> {
                         backgroundColor: WidgetStatePropertyAll(Colors.pink[100]),
                       ),
                       onPressed: (){
-                              
+                              _delete();
                       },
                       child: Text('Delete'),
                       ),
@@ -81,5 +99,25 @@ class _NoteDetailsState extends State<NoteDetails> {
         ),
       ),
     );
+  }
+
+  void _save() async{
+    widget.note.title = _titleController.text;
+    widget.note.description = _descController.text;
+
+    if(widget.note.id != null){
+      await databaseHelper.updateNote(widget.note);
+    }else{
+      await databaseHelper.insertNote(widget.note);
+    }
+    Navigator.pop(context);
+  }
+
+  void _delete() async{
+    if(widget.note.id == null){
+      return;
+    }
+    await databaseHelper.deleteNote(widget.note.id!);
+    Navigator.pop(context);
   }
 }
